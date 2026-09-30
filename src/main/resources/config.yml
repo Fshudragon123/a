@@ -1,0 +1,25 @@
+# AevumBounties
+settings:
+  minimum-bounty: 100.0
+  maximum-bounty: 1000000.0
+  cancellation-refund-percent: 100
+  announcement: true
+  autosave-seconds: 30
+
+gui:
+  title: "&8✦ &6&lBOUNTY BOARD &8✦"
+  accent: "&6"
+  filler: "&8"
+  target-head: "&c&lTARGET"
+  bounty-item: "&6&lBOUNTY"
+  create-item: "&e&lPOST A BOUNTY"
+  my-item: "&b&lMY BOUNTIES"
+  leaderboard-item: "&d&lHALL OF HUNTERS"
+
+messages:
+  prefix: "&8[&6Aevum&8] &r"
+  no-vault: "&cVault/economy was not found. Bounties are disabled."
+  no-permission: "&cYou don't have permission to use bounties."
+  minimum: "&cThe minimum bounty is &e$%amount%&c."
+  maximum: "&cThe maximum bounty is &e$%amount%&c."
+  insufficient: "&cYou need &e$%amount% &cto post that bounty."
