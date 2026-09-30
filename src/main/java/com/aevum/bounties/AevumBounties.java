@@ -28,8 +28,6 @@ public final class AevumBounties extends JavaPlugin {
 
         getCommand("bounty").setExecutor(command);
         getCommand("bounty").setTabCompleter(command);
-        getCommand("cancel").setExecutor(command);
-        getCommand("cancel").setTabCompleter(command);
 
         getServer().getPluginManager().registerEvents(
                 new BountyListener(this, bountyManager, bountyGUI), this
@@ -58,7 +56,7 @@ public final class AevumBounties extends JavaPlugin {
     public Economy getEconomy() { return economy; }
     public BountyManager getBountyManager() { return bountyManager; }
     public BountyGUI getBountyGUI() { return bountyGUI; }
-    public String money(double amount) { return getConfig().getString("settings.currency-symbol", "$" ) + String.format(java.util.Locale.US, "%,.2f", amount); }
+    public String money(double amount) { return getConfig().getString("settings.currency-symbol", "$") + String.format(java.util.Locale.US, "%,.2f", amount); }
     public static String color(String text) { return org.bukkit.ChatColor.translateAlternateColorCodes('&', text); }
     public void announce(String text) { Bukkit.broadcastMessage(color(getConfig().getString("messages.prefix", "&8[&6Aevum&8] ") + text)); }
 }
