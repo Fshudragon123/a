@@ -1,0 +1,18 @@
+name: AevumBounties
+version: 1.0.0
+main: com.aevum.bounties.AevumBounties
+api-version: '1.21'
+author: AevumMC
+description: A cinematic, Vault-powered bounty system with a full GUI.
+softdepend:
+  - Vault
+commands:
+  bounty:
+    description: Open the Aevum bounty board.
+    usage: /bounty
+    aliases: [bounties, hunt]
+permissions:
+  aevumbounties.use:
+    default: true
+  aevumbounties.admin:
+    default: op
