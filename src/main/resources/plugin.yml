@@ -11,6 +11,10 @@ commands:
     description: Open the Aevum bounty board.
     usage: /bounty
     aliases: [bounties, hunt]
+  cancel:
+    description: Cancel and refund one of your bounties.
+    usage: /cancel [player]
+    aliases: [cancelbounty]
 permissions:
   aevumbounties.use:
     default: true
