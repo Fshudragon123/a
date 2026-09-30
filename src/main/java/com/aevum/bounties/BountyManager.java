@@ -1,6 +1,7 @@
 package com.aevum.bounties;
 
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -25,19 +26,20 @@ public final class BountyManager {
 
     public Economy economy() { return economy; }
     public Collection<Bounty> all() { return Collections.unmodifiableCollection(bounties.values()); }
-
     public Optional<Bounty> byId(UUID id) { return Optional.ofNullable(bounties.get(id)); }
-
     public List<Bounty> byTarget(UUID target) {
         return bounties.values().stream().filter(b -> b.target().equals(target)).toList();
     }
-
+    public List<Bounty> byCreator(UUID creator) {
+        return bounties.values().stream().filter(b -> b.creator().equals(creator)).toList();
+    }
     public double total() { return bounties.values().stream().mapToDouble(Bounty::amount).sum(); }
 
     public Bounty create(Player creator, Player target, double amount) {
         if (!Double.isFinite(amount) || amount <= 0 || !economy.has(creator, amount)) return null;
+        EconomyResponse withdrawal = economy.withdrawPlayer(creator, amount);
+        if (!withdrawal.transactionSuccess()) return null;
 
-        economy.withdrawPlayer(creator, amount);
         Bounty bounty = new Bounty(UUID.randomUUID(), target.getUniqueId(), target.getName(),
                 creator.getUniqueId(), creator.getName(), amount, System.currentTimeMillis());
         bounties.put(bounty.id(), bounty);
@@ -60,12 +62,18 @@ public final class BountyManager {
             return false;
         }
 
-        economy.depositPlayer(requester, bounty.amount());
+        EconomyResponse refund = economy.depositPlayer(requester, bounty.amount());
+        if (!refund.transactionSuccess()) {
+            plugin.getLogger().severe("Bounty refund failed for " + requester.getName() + " (" + id + "): " + refund.errorMessage);
+            return false;
+        }
         return true;
     }
 
     public Bounty claim(Player hunter, Player target) {
-        List<Bounty> hits = byTarget(target.getUniqueId());
+        List<Bounty> hits = byTarget(target.getUniqueId()).stream()
+                .filter(b -> !b.creator().equals(hunter.getUniqueId()))
+                .toList();
         if (hits.isEmpty()) return null;
 
         double total = hits.stream().mapToDouble(Bounty::amount).sum();
@@ -80,7 +88,14 @@ public final class BountyManager {
             return null;
         }
 
-        economy.depositPlayer(hunter, total);
+        EconomyResponse reward = economy.depositPlayer(hunter, total);
+        if (!reward.transactionSuccess()) {
+            bounties.putAll(removed);
+            save();
+            plugin.getLogger().severe("Bounty reward payment failed for " + hunter.getName() + ": " + reward.errorMessage);
+            return null;
+        }
+
         return new Bounty(UUID.randomUUID(), target.getUniqueId(), target.getName(),
                 hunter.getUniqueId(), hunter.getName(), total, System.currentTimeMillis());
     }
@@ -94,11 +109,7 @@ public final class BountyManager {
     }
 
     private void load() {
-        if (!file.exists()) {
-            save();
-            return;
-        }
-
+        if (!file.exists()) { save(); return; }
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection section = config.getConfigurationSection("bounties");
         if (section == null) return;
@@ -107,17 +118,13 @@ public final class BountyManager {
             try {
                 ConfigurationSection x = section.getConfigurationSection(key);
                 if (x == null) continue;
-
                 UUID id = UUID.fromString(key);
-                bounties.put(id, new Bounty(
-                        id,
+                bounties.put(id, new Bounty(id,
                         UUID.fromString(Objects.requireNonNull(x.getString("target"))),
                         x.getString("targetName", "Unknown"),
                         UUID.fromString(Objects.requireNonNull(x.getString("creator"))),
                         x.getString("creatorName", "Unknown"),
-                        x.getDouble("amount"),
-                        x.getLong("createdAt")
-                ));
+                        x.getDouble("amount"), x.getLong("createdAt")));
             } catch (Exception ex) {
                 plugin.getLogger().warning("Skipped malformed bounty " + key + ": " + ex.getMessage());
             }
@@ -135,7 +142,6 @@ public final class BountyManager {
             config.set(key + ".amount", b.amount());
             config.set(key + ".createdAt", b.createdAt());
         }
-
         try {
             file.getParentFile().mkdirs();
             config.save(file);
