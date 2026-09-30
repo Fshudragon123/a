@@ -1,10 +1,13 @@
 # AevumBounties
 settings:
-  minimum-bounty: 100.0
-  maximum-bounty: 1000000.0
+  min-bounty: 100.0
+  max-bounty: 1000000.0
   cancellation-refund-percent: 100
-  announcement: true
+  announce-new-bounties: true
+  announce-claims: true
+  allow-self: false
   autosave-seconds: 30
+  currency-symbol: "$"
 
 gui:
   title: "&8✦ &6&lBOUNTY BOARD &8✦"
