@@ -8,13 +8,9 @@ softdepend:
   - Vault
 commands:
   bounty:
-    description: Open the Aevum bounty board.
+    description: Open and manage the Aevum bounty system.
     usage: /bounty
     aliases: [bounties, hunt]
-  cancel:
-    description: Cancel and refund one of your bounties.
-    usage: /cancel [player]
-    aliases: [cancelbounty]
 permissions:
   aevumbounties.use:
     default: true
