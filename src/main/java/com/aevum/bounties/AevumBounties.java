@@ -28,6 +28,8 @@ public final class AevumBounties extends JavaPlugin {
 
         getCommand("bounty").setExecutor(command);
         getCommand("bounty").setTabCompleter(command);
+        getCommand("cancel").setExecutor(command);
+        getCommand("cancel").setTabCompleter(command);
 
         getServer().getPluginManager().registerEvents(
                 new BountyListener(this, bountyManager, bountyGUI), this
