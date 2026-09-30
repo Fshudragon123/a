@@ -1,5 +1,5 @@
 package com.aevum.bounties;
-import org.bukkit.*;import org.bukkit.entity.Player;import org.bukkit.event.inventory.InventoryClickEvent;import org.bukkit.inventory.*;import org.bukkit.inventory.meta.ItemMeta;import java.util.*;
+import org.bukkit.*;import org.bukkit.entity.Player;import org.bukkit.event.inventory.InventoryClickEvent;import org.bukkit.inventory.*;import org.bukkit.inventory.meta.ItemMeta;import org.bukkit.inventory.meta.SkullMeta;import java.util.*;
 public final class BountyGUI{
  public static final String BOARD_TITLE="§0✦ §6§lBOUNTY BOARD §0✦",TOP_TITLE="§0✦ §e§lBOUNTY HALL §0✦";private final AevumBounties p;private final BountyManager m;
  public BountyGUI(AevumBounties p,BountyManager m){this.p=p;this.m=m;}
