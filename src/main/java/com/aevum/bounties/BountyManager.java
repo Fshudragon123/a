@@ -1,110 +1,148 @@
 package com.aevum.bounties;
 
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class BountyManager {
     private final AevumBounties plugin;
     private final Economy economy;
     private final Map<UUID, Bounty> bounties = new LinkedHashMap<>();
     private final File file;
-    private FileConfiguration data;
 
     public BountyManager(AevumBounties plugin, Economy economy) {
         this.plugin = plugin;
         this.economy = economy;
         this.file = new File(plugin.getDataFolder(), "data.yml");
+        load();
     }
 
-    public void load() {
-        data = YamlConfiguration.loadConfiguration(file);
-        bounties.clear();
-        ConfigurationSection section = data.getConfigurationSection("bounties");
+    public Economy economy() { return economy; }
+    public Collection<Bounty> all() { return Collections.unmodifiableCollection(bounties.values()); }
+
+    public Optional<Bounty> byId(UUID id) { return Optional.ofNullable(bounties.get(id)); }
+
+    public List<Bounty> byTarget(UUID target) {
+        return bounties.values().stream().filter(b -> b.target().equals(target)).toList();
+    }
+
+    public double total() { return bounties.values().stream().mapToDouble(Bounty::amount).sum(); }
+
+    public Bounty create(Player creator, Player target, double amount) {
+        if (!Double.isFinite(amount) || amount <= 0 || !economy.has(creator, amount)) return null;
+
+        economy.withdrawPlayer(creator, amount);
+        Bounty bounty = new Bounty(UUID.randomUUID(), target.getUniqueId(), target.getName(),
+                creator.getUniqueId(), creator.getName(), amount, System.currentTimeMillis());
+        bounties.put(bounty.id(), bounty);
+
+        if (!save()) {
+            bounties.remove(bounty.id());
+            economy.depositPlayer(creator, amount);
+            return null;
+        }
+        return bounty;
+    }
+
+    public boolean cancel(UUID id, Player requester) {
+        Bounty bounty = bounties.get(id);
+        if (bounty == null || !bounty.creator().equals(requester.getUniqueId())) return false;
+
+        bounties.remove(id);
+        if (!save()) {
+            bounties.put(id, bounty);
+            return false;
+        }
+
+        economy.depositPlayer(requester, bounty.amount());
+        return true;
+    }
+
+    public Bounty claim(Player hunter, Player target) {
+        List<Bounty> hits = byTarget(target.getUniqueId());
+        if (hits.isEmpty()) return null;
+
+        double total = hits.stream().mapToDouble(Bounty::amount).sum();
+        Map<UUID, Bounty> removed = new LinkedHashMap<>();
+        for (Bounty bounty : hits) {
+            removed.put(bounty.id(), bounty);
+            bounties.remove(bounty.id());
+        }
+
+        if (!save()) {
+            bounties.putAll(removed);
+            return null;
+        }
+
+        economy.depositPlayer(hunter, total);
+        return new Bounty(UUID.randomUUID(), target.getUniqueId(), target.getName(),
+                hunter.getUniqueId(), hunter.getName(), total, System.currentTimeMillis());
+    }
+
+    public List<Bounty> top() {
+        return bounties.values().stream()
+                .sorted(Comparator.comparingDouble(Bounty::amount).reversed()
+                        .thenComparingLong(Bounty::createdAt))
+                .limit(45)
+                .collect(Collectors.toList());
+    }
+
+    private void load() {
+        if (!file.exists()) {
+            save();
+            return;
+        }
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        ConfigurationSection section = config.getConfigurationSection("bounties");
         if (section == null) return;
 
         for (String key : section.getKeys(false)) {
             try {
-                UUID target = UUID.fromString(key);
-                String path = "bounties." + key;
-                bounties.put(target, new Bounty(
-                        target,
-                        data.getString(path + ".target-name", "Unknown"),
-                        UUID.fromString(data.getString(path + ".creator")),
-                        data.getString(path + ".creator-name", "Unknown"),
-                        data.getDouble(path + ".amount"),
-                        data.getLong(path + ".created-at")
+                ConfigurationSection x = section.getConfigurationSection(key);
+                if (x == null) continue;
+
+                UUID id = UUID.fromString(key);
+                bounties.put(id, new Bounty(
+                        id,
+                        UUID.fromString(Objects.requireNonNull(x.getString("target"))),
+                        x.getString("targetName", "Unknown"),
+                        UUID.fromString(Objects.requireNonNull(x.getString("creator"))),
+                        x.getString("creatorName", "Unknown"),
+                        x.getDouble("amount"),
+                        x.getLong("createdAt")
                 ));
             } catch (Exception ex) {
-                plugin.getLogger().warning("Skipped malformed bounty: " + key);
+                plugin.getLogger().warning("Skipped malformed bounty " + key + ": " + ex.getMessage());
             }
         }
     }
 
-    public synchronized boolean create(UUID creator, String creatorName, UUID target, String targetName, double amount) {
-        if (creator.equals(target) || bounties.containsKey(target)) return false;
-        if (!economy.has(Bukkit.getOfflinePlayer(creator), amount)) return false;
-        economy.withdrawPlayer(Bukkit.getOfflinePlayer(creator), amount);
-        bounties.put(target, new Bounty(target, targetName, creator, creatorName, amount, System.currentTimeMillis()));
-        save();
-        return true;
-    }
-
-    public synchronized Bounty remove(UUID target) {
-        Bounty bounty = bounties.remove(target);
-        save();
-        return bounty;
-    }
-
-    public synchronized boolean cancel(UUID creator, UUID target) {
-        Bounty bounty = bounties.get(target);
-        if (bounty == null || !bounty.creator().equals(creator)) return false;
-        bounties.remove(target);
-        economy.depositPlayer(Bukkit.getOfflinePlayer(creator), bounty.amount());
-        save();
-        return true;
-    }
-
-    public synchronized Collection<Bounty> all() {
-        return List.copyOf(bounties.values());
-    }
-
-    public synchronized List<Bounty> top(int limit) {
-        return bounties.values().stream()
-                .sorted(Comparator.comparingDouble(Bounty::amount).reversed())
-                .limit(limit)
-                .toList();
-    }
-
-    public synchronized Bounty get(UUID target) {
-        return bounties.get(target);
-    }
-
-    public Economy economy() {
-        return economy;
-    }
-
-    public synchronized void save() {
-        if (data == null) data = new YamlConfiguration();
-        data.set("bounties", null);
+    public boolean save() {
+        YamlConfiguration config = new YamlConfiguration();
         for (Bounty b : bounties.values()) {
-            String path = "bounties." + b.target();
-            data.set(path + ".target-name", b.targetName());
-            data.set(path + ".creator", b.creator().toString());
-            data.set(path + ".creator-name", b.creatorName());
-            data.set(path + ".amount", b.amount());
-            data.set(path + ".created-at", b.createdAt());
+            String key = "bounties." + b.id();
+            config.set(key + ".target", b.target().toString());
+            config.set(key + ".targetName", b.targetName());
+            config.set(key + ".creator", b.creator().toString());
+            config.set(key + ".creatorName", b.creatorName());
+            config.set(key + ".amount", b.amount());
+            config.set(key + ".createdAt", b.createdAt());
         }
+
         try {
-            data.save(file);
+            file.getParentFile().mkdirs();
+            config.save(file);
+            return true;
         } catch (IOException ex) {
-            plugin.getLogger().severe("Could not save bounties.yml: " + ex.getMessage());
+            plugin.getLogger().severe("Could not save bounty data: " + ex.getMessage());
+            return false;
         }
     }
 }
