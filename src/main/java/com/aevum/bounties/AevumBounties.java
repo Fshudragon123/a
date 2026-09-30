@@ -22,7 +22,6 @@ public final class AevumBounties extends JavaPlugin {
         }
 
         bountyManager = new BountyManager(this, economy);
-        bountyManager.load();
 
         bountyGUI = new BountyGUI(this, bountyManager);
         BountyCommand command = new BountyCommand(this, bountyManager, bountyGUI);
@@ -54,7 +53,10 @@ public final class AevumBounties extends JavaPlugin {
         return economy != null;
     }
 
-    public Economy getEconomy() {
-        return economy;
-    }
+    public Economy getEconomy() { return economy; }
+    public BountyManager getBountyManager() { return bountyManager; }
+    public BountyGUI getBountyGUI() { return bountyGUI; }
+    public String money(double amount) { return getConfig().getString("settings.currency-symbol", "$" ) + String.format(java.util.Locale.US, "%,.2f", amount); }
+    public static String color(String text) { return org.bukkit.ChatColor.translateAlternateColorCodes('&', text); }
+    public void announce(String text) { Bukkit.broadcastMessage(color(getConfig().getString("messages.prefix", "&8[&6Aevum&8] ") + text)); }
 }
