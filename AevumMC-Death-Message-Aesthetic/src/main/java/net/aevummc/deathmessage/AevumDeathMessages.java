@@ -90,6 +90,10 @@ public final class AevumDeathMessages extends JavaPlugin implements Listener, Co
         if (cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) {
             return "explosion";
         }
+        // Keep spectacular Warden deaths distinct instead of classifying them as a normal mob hit.
+        if (cause == DamageCause.SONIC_BOOM) {
+            return "sonic-boom";
+        }
 
         if (attacker != null) {
             if (projectile) {
