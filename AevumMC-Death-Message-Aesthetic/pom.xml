@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.aevummc</groupId>
     <artifactId>aevummc-death-message-aesthetic</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>AevumMC Death Message Aesthetic</name>
-    <description>A lightweight, dependency-free Paper plugin for elegant AevumMC death messages.</description>
+    <description>Polished Roman-inspired death messages for AevumMC Paper servers.</description>
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>26.2-R0.1-SNAPSHOT</version>
+            <version>26.2.build.121-stable</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -33,6 +33,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
+                <configuration>
+                    <release>25</release>
+                    <encoding>UTF-8</encoding>
+                </configuration>
             </plugin>
         </plugins>
     </build>
