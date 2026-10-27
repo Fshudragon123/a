@@ -1,17 +1,105 @@
-# AevumMC Death Message Aesthetic
-# MiniMessage formatting is supported. Palette: antique gold, ivory and muted grey.
-# Placeholders: <victim>, <killer>
-# Restart the server after changing this file.
+# ╔══════════════════════════════════════════════════════════════╗
+# ║          A E V U M M C  •  D E A T H  M E S S A G E S       ║
+# ║                       IMPERIUM EDITION                       ║
+# ╚══════════════════════════════════════════════════════════════╝
+#
+# Design language: antique gold, ivory, muted stone and restrained crimson.
+# Placeholders are safely inserted as plain text:
+#   <victim> = the player who died
+#   <killer> = the player, mob or named entity responsible
+#
+# MiniMessage colours: <#C98B24>, <#E0A63A>, <#F3EBDD>, <#8B8B95>, <#E05252>.
+# Add more lines under a message key for more variation.
+# After editing, run /aevumdeath reload.
+
+settings:
+  enabled: true
+  # Also use the styled line on the dying player's death screen.
+  style-death-screen: true
+  # Pick a random template when a key has multiple variants.
+  random-variants: true
 
 messages:
-  player-kill: "<#C98B24>✦ <#E0A63A><victim> <#8B8B95>was slain by <#F3EBDD><killer><#8B8B95>."
-  projectile-kill: "<#C98B24>➶ <#E0A63A><victim> <#8B8B95>was struck down by <#F3EBDD><killer><#8B8B95>."
-  fall: "<#C98B24>✦ <#E0A63A><victim> <#8B8B95>fell from the heights."
-  lava: "<#C98B24>◆ <#E0A63A><victim> <#8B8B95>was consumed by molten fire."
-  fire: "<#C98B24>◆ <#E0A63A><victim> <#8B8B95>was lost to the flames."
-  drowning: "<#C98B24>≈ <#E0A63A><victim> <#8B8B95>was claimed by the depths."
-  void: "<#C98B24>✧ <#E0A63A><victim> <#8B8B95>was lost to the void."
-  explosion: "<#C98B24>✹ <#E0A63A><victim> <#8B8B95>was caught in a devastating explosion."
-  freeze: "<#C98B24>❄ <#E0A63A><victim> <#8B8B95>succumbed to the bitter cold."
-  lightning: "<#C98B24>ϟ <#E0A63A><victim> <#8B8B95>was struck down by lightning."
-  generic: "<#C98B24>✦ <#E0A63A><victim> <#8B8B95>has fallen from the empire."
+  player-kill:
+    - '<#C98B24>⚔ <#E0A63A><victim> <#8B8B95>was slain by <#F3EBDD><killer><#8B8B95>.'
+    - '<#C98B24>⚔ <#E0A63A><victim><#8B8B95> fell to the blade of <#F3EBDD><killer><#8B8B95>.'
+    - '<#C98B24>✦ <#F3EBDD><killer> <#8B8B95>claimed the life of <#E0A63A><victim><#8B8B95>.'
+
+  player-projectile-kill:
+    - '<#C98B24>➶ <#E0A63A><victim> <#8B8B95>was struck down by <#F3EBDD><killer><#8B8B95>.'
+    - '<#C98B24>➶ <#F3B85B><killer><#8B8B95>''s aim proved fatal to <#E0A63A><victim><#8B8B95>.'
+
+  mob-kill:
+    - '<#C98B24>☠ <#E0A63A><victim> <#8B8B95>was claimed by <#F3EBDD><killer><#8B8B95>.'
+    - '<#C98B24>☠ <#E0A63A><victim> <#8B8B95>fell to a <#F3EBDD><killer><#8B8B95>.'
+
+  mob-projectile-kill:
+    - '<#C98B24>➶ <#E0A63A><victim> <#8B8B95>was shot down by a <#F3EBDD><killer><#8B8B95>.'
+
+  projectile:
+    - '<#C98B24>➶ <#E0A63A><victim> <#8B8B95>was struck by an unseen projectile.'
+
+  fall:
+    - '<#C98B24>↡ <#E0A63A><victim> <#8B8B95>fell from the heights.'
+    - '<#C98B24>↡ <#E0A63A><victim> <#8B8B95>learned that the ground always wins.'
+
+  lava:
+    - '<#C98B24>◆ <#E05252><victim> <#8B8B95>was consumed by molten fire.'
+    - '<#C98B24>◆ <#E05252><victim> <#8B8B95>was claimed by the lava.'
+
+  fire:
+    - '<#C98B24>♨ <#E05252><victim> <#8B8B95>was lost to the flames.'
+    - '<#C98B24>♨ <#E05252><victim> <#8B8B95>burned until the end.'
+
+  drowning:
+    - '<#C98B24>≈ <#E0A63A><victim> <#8B8B95>was claimed by the depths.'
+
+  void:
+    - '<#C98B24>✧ <#8B8B95><victim> was lost to the void.'
+    - '<#C98B24>✧ <#8B8B95><victim> passed beyond the edge of the world.'
+
+  explosion:
+    - '<#C98B24>✹ <#E0A63A><victim> <#8B8B95>was caught in a devastating explosion.'
+
+  freeze:
+    - '<#C98B24>❄ <#E0A63A><victim> <#8B8B95>succumbed to the bitter cold.'
+
+  lightning:
+    - '<#C98B24>ϟ <#E0A63A><victim> <#8B8B95>was struck down by lightning.'
+
+  starvation:
+    - '<#C98B24>✦ <#E0A63A><victim> <#8B8B95>perished from hunger.'
+
+  suffocation:
+    - '<#C98B24>▧ <#E0A63A><victim> <#8B8B95>was entombed in stone.'
+
+  contact:
+    - '<#C98B24>✦ <#E0A63A><victim> <#8B8B95>met an unfortunate end on a dangerous surface.'
+
+  magic:
+    - '<#C98B24>✧ <#E0A63A><victim> <#8B8B95>was undone by dark magic.'
+
+  wither:
+    - '<#C98B24>☠ <#8B8B95><victim> withered away.'
+
+  cramming:
+    - '<#C98B24>✦ <#E0A63A><victim> <#8B8B95>was crushed in the crowd.'
+
+  falling-block:
+    - '<#C98B24>▧ <#E0A63A><victim> <#8B8B95>was struck by falling debris.'
+
+  sonic-boom:
+    - '<#C98B24>〰 <#E0A63A><victim> <#8B8B95>was silenced by a sonic boom.'
+
+  dryout:
+    - '<#C98B24>≈ <#E0A63A><victim> <#8B8B95>was lost without water.'
+
+  world-border:
+    - '<#C98B24>✧ <#8B8B95><victim> travelled beyond the world''s edge.'
+
+  execution:
+    - '<#C98B24>☠ <#E0A63A><victim> <#8B8B95>was claimed by the final command.'
+
+  generic:
+    - '<#C98B24>✦ <#E0A63A><victim> <#8B8B95>has fallen from the empire.'
+    - '<#C98B24>✦ <#8B8B95>The empire mourns the fall of <#E0A63A><victim><#8B8B95>.'
