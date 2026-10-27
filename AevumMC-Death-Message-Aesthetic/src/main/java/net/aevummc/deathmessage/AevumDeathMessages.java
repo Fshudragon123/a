@@ -6,6 +6,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.damage.DamageSource;
@@ -40,7 +41,7 @@ public final class AevumDeathMessages extends JavaPlugin implements Listener, Co
     public void onEnable() {
         saveDefaultConfig();
 
-        Command command = Objects.requireNonNull(
+        PluginCommand command = Objects.requireNonNull(
                 getCommand("aevumdeath"),
                 "aevumdeath command is missing from plugin.yml"
         );
