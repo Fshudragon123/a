@@ -1,0 +1,17 @@
+# AevumMC Death Message Aesthetic
+# MiniMessage formatting is supported. Palette: antique gold, ivory and muted grey.
+# Placeholders: <victim>, <killer>
+# Restart the server after changing this file.
+
+messages:
+  player-kill: "<#C98B24>✦ <#E0A63A><victim> <#8B8B95>was slain by <#F3EBDD><killer><#8B8B95>."
+  projectile-kill: "<#C98B24>➶ <#E0A63A><victim> <#8B8B95>was struck down by <#F3EBDD><killer><#8B8B95>."
+  fall: "<#C98B24>✦ <#E0A63A><victim> <#8B8B95>fell from the heights."
+  lava: "<#C98B24>◆ <#E0A63A><victim> <#8B8B95>was consumed by molten fire."
+  fire: "<#C98B24>◆ <#E0A63A><victim> <#8B8B95>was lost to the flames."
+  drowning: "<#C98B24>≈ <#E0A63A><victim> <#8B8B95>was claimed by the depths."
+  void: "<#C98B24>✧ <#E0A63A><victim> <#8B8B95>was lost to the void."
+  explosion: "<#C98B24>✹ <#E0A63A><victim> <#8B8B95>was caught in a devastating explosion."
+  freeze: "<#C98B24>❄ <#E0A63A><victim> <#8B8B95>succumbed to the bitter cold."
+  lightning: "<#C98B24>ϟ <#E0A63A><victim> <#8B8B95>was struck down by lightning."
+  generic: "<#C98B24>✦ <#E0A63A><victim> <#8B8B95>has fallen from the empire."
