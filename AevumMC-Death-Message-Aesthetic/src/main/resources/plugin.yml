@@ -1,0 +1,6 @@
+name: AevumMCDeathMessageAesthetic
+version: 1.0.0
+main: net.aevummc.deathmessage.AevumDeathMessages
+api-version: '26.2'
+author: AevumMC
+description: Elegant antique-gold death messages for AevumMC.
