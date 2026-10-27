@@ -1,6 +1,20 @@
 name: AevumMCDeathMessageAesthetic
-version: 1.0.0
+version: 1.1.0
 main: net.aevummc.deathmessage.AevumDeathMessages
 api-version: '26.2'
 author: AevumMC
-description: Elegant antique-gold death messages for AevumMC.
+description: Elegant, configurable Roman-inspired death messages for AevumMC.
+website: https://aevummc.net
+
+commands:
+  aevumdeath:
+    description: Manage and preview AevumMC death messages.
+    usage: /aevumdeath <reload|preview [message-key]|causes>
+    aliases: [deathstyle, aevumdeathmessage]
+    permission: aevumdeath.admin
+    permission-message: "§6✦ §eAevumMC §8» §cYou do not have permission to use this command."
+
+permissions:
+  aevumdeath.admin:
+    description: Allows reloading and previewing AevumMC death-message styles.
+    default: op
