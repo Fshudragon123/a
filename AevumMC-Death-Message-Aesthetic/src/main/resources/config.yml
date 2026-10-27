@@ -31,10 +31,10 @@ messages:
 
   mob-kill:
     - '<#C98B24>☠ <#E0A63A><victim> <#8B8B95>was claimed by <#F3EBDD><killer><#8B8B95>.'
-    - '<#C98B24>☠ <#E0A63A><victim> <#8B8B95>fell to a <#F3EBDD><killer><#8B8B95>.'
+    - '<#C98B24>☠ <#E0A63A><victim> <#8B8B95>fell to <#F3EBDD><killer><#8B8B95>.'
 
   mob-projectile-kill:
-    - '<#C98B24>➶ <#E0A63A><victim> <#8B8B95>was shot down by a <#F3EBDD><killer><#8B8B95>.'
+    - '<#C98B24>➶ <#E0A63A><victim> <#8B8B95>was shot down by <#F3EBDD><killer><#8B8B95>.'
 
   projectile:
     - '<#C98B24>➶ <#E0A63A><victim> <#8B8B95>was struck by an unseen projectile.'
