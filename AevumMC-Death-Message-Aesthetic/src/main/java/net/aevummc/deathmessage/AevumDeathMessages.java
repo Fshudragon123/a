@@ -10,8 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Locale;
-
 public final class AevumDeathMessages extends JavaPlugin implements Listener {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
@@ -31,23 +29,18 @@ public final class AevumDeathMessages extends JavaPlugin implements Listener {
                 getConfig().getString("messages.generic",
                         "<#C98B24>✦ <#E0A63A><victim> <#8B8B95>has fallen from the empire."));
 
-        String victimName = victim.getName();
-        String killerName = killer == null ? "" : killer.getName();
         String rendered = template
-                .replace("<victim>", victimName)
-                .replace("<killer>", killerName);
+                .replace("<victim>", victim.getName())
+                .replace("<killer>", killer == null ? "" : killer.getName());
 
         Component message = miniMessage.deserialize(rendered);
         event.deathMessage(message);
     }
 
     private String selectMessageKey(PlayerDeathEvent event, Player killer) {
-        DamageCause cause = event.getDamageSource().getDamageType().getKey().getKey()
-                .toLowerCase(Locale.ROOT).contains("projectile")
-                ? DamageCause.PROJECTILE
-                : event.getDamageSource().getDamageType().getKey().getKey().isEmpty()
+        DamageCause cause = event.getPlayer().getLastDamageCause() == null
                 ? null
-                : getCause(event);
+                : event.getPlayer().getLastDamageCause().getCause();
 
         if (killer != null) {
             return cause == DamageCause.PROJECTILE ? "projectile-kill" : "player-kill";
@@ -65,10 +58,5 @@ public final class AevumDeathMessages extends JavaPlugin implements Listener {
             case LIGHTNING -> "lightning";
             default -> "generic";
         };
-    }
-
-    private DamageCause getCause(PlayerDeathEvent event) {
-        if (event.getPlayer().getLastDamageCause() == null) return null;
-        return event.getPlayer().getLastDamageCause().getCause();
     }
 }
